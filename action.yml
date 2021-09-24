@@ -41,7 +41,7 @@ runs:
           fetch-depth: 0
     - name: Merge
       env:
-        ACTIONS_SECRET: ${{ ${{ inputs.actions_secret }} }}
+        ACTIONS_SECRET: ${{ inputs.actions_secret }}
         source_branch: ${{ inputs.source_branch }}
         destination_branch: ${{ inputs.destination_branch }}
       run: |
