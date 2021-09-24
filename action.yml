@@ -11,27 +11,12 @@ inputs:
   pr_title:
     description: Pull request title
     required: false
-#  pr_body:
-#    description: Pull request body
-#    required: false
-#  pr_template:
-#    description: Pull request template
-#    required: false
-#  pr_reviewer:
-#    description: Pull request reviewers, comma-separated list (no spaces)
-#    required: false
   pr_assignee:
     description: Pull request assignees, comma-separated list (no spaces)
     required: false
   pr_label:
     description: Pull request labels, comma-separated list (no spaces)
     required: false
-#  pr_milestone:
-#    description: Pull request milestone
-#    required: false
-#  pr_draft:
-#    description: Draft pull request
-#    required: false
   pr_allow_empty:
     description: Create PR even if no changes
     required: false
@@ -46,8 +31,6 @@ outputs:
     description: 'Pull request URL'
   pr_number:
     description: 'Pull request number'
-  has_changed_files:
-    description: 'Boolean string indicating whether any file has been changed'
 runs:
   using: "composite"
     - name: Checkout
