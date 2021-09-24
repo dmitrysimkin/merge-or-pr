@@ -40,7 +40,6 @@ runs:
           token: ${{ inputs.github_token }}
           fetch-depth: 0
     - name: Merge
-      shell: bash
       env:
         ACTIONS_SECRET: ${{ inputs.actions_secret }}
         source_branch: ${{ inputs.source_branch }}
@@ -54,6 +53,7 @@ runs:
         echo "Merging $source_branch into $destination_branch"
         git merge $source_branch --verbose
         git push origin $destination_branch
+      shell: bash
     - name: pull-request # Step to create PR
       env:
         source_branch: ${{ inputs.source_branch }}
