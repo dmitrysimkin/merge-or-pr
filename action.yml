@@ -58,7 +58,7 @@ runs:
       env:
         source_branch: ${{ inputs.source_branch }}
         destination_branch: ${{ inputs.destination_branch }}
-      if: ${{ failure() }}
+#      if: ${{ failure() }}
       uses: repo-sync/pull-request@v2 # 3rd party action
       with:
         source_branch: ${{ env.source_branch }}                               # If blank, default: triggered branch
