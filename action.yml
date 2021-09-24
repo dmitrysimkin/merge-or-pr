@@ -64,6 +64,7 @@ runs:
             echo 'Be careful not to fall off!'
             exit 0
         fi
+      shell: bash
     - name: pull-request # Step to create PR
       env:
         source_branch: ${{ inputs.source_branch }}
