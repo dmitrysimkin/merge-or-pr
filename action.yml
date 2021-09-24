@@ -33,6 +33,7 @@ outputs:
     description: 'Pull request number'
 runs:
   using: "composite"
+  steps:
     - name: Checkout
       uses: actions/checkout@v2
       with:
