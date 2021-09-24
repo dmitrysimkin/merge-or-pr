@@ -17,6 +17,9 @@ inputs:
   pr_label:
     description: Pull request labels, comma-separated list (no spaces)
     required: false
+  pr_body:
+    description: Pull request body
+    required: false
   pr_allow_empty:
     description: Create PR even if no changes
     required: false
@@ -61,11 +64,11 @@ runs:
 #      if: ${{ failure() }}
       uses: repo-sync/pull-request@v2 # 3rd party action
       with:
-        source_branch: ${{ env.source_branch }}                               # If blank, default: triggered branch
-        destination_branch: ${{ env.destination_branch }}                 # If blank, default: master
-        pr_title: "Update $destination_branch with latest changes from $source_branch"     # Title of pull request
-        pr_body: ":crown: *An automated PR*"              # Full markdown support, requires pr_title to be set
-        pr_label: "auto-pr"                               # Comma-separated list (no spaces)
-        pr_draft: false                                   # Creates pull request as draft
-        pr_allow_empty: false                             # Creates pull request even if there are no changes
-        github_token: ${{ inputs.github_token }} # needed for auth git commands
+        source_branch: ${{ env.source_branch }}                           
+        destination_branch: ${{ env.destination_branch }}
+        pr_title: "Update $destination_branch with latest changes from $source_branch"
+        pr_body: ${{ inputs.pr_body }}
+        pr_label: ${{ inputs.pr_label }}
+        pr_draft: false
+        pr_allow_empty: false
+        github_token: ${{ inputs.github_token }}
