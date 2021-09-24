@@ -1,0 +1,86 @@
+name: 'Merge or PR'
+description: 'Description'
+inputs:
+  source_branch:
+    description: Branch name to pull from, default is triggered branch
+    required: false
+  destination_branch:
+    description: Branch name to sync to in this repo, default is master
+    required: false
+    default: master
+  pr_title:
+    description: Pull request title
+    required: false
+#  pr_body:
+#    description: Pull request body
+#    required: false
+#  pr_template:
+#    description: Pull request template
+#    required: false
+#  pr_reviewer:
+#    description: Pull request reviewers, comma-separated list (no spaces)
+#    required: false
+  pr_assignee:
+    description: Pull request assignees, comma-separated list (no spaces)
+    required: false
+  pr_label:
+    description: Pull request labels, comma-separated list (no spaces)
+    required: false
+#  pr_milestone:
+#    description: Pull request milestone
+#    required: false
+#  pr_draft:
+#    description: Draft pull request
+#    required: false
+  pr_allow_empty:
+    description: Create PR even if no changes
+    required: false
+  github_token:
+    description: GitHub token secret
+    required: true
+  actions_secret:
+    description: Token that allows github action to perform merge operation and push
+    required: true
+outputs:
+  pr_url:
+    description: 'Pull request URL'
+  pr_number:
+    description: 'Pull request number'
+  has_changed_files:
+    description: 'Boolean string indicating whether any file has been changed'
+runs:
+  using: "composite"
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+          token: ${{ inputs.github_token }}
+          fetch-depth: 0
+    - name: Merge
+      env:
+        ACTIONS_SECRET: ${{ ${{ inputs.actions_secret }} }}
+        source_branch: ${{ inputs.source_branch }}
+        destination_branch: ${{ inputs.destination_branch }}
+      run: |
+        git config user.name "Nutmeg GitHub actions"
+        git config --global user.email "d.simkin@godeltech.com"
+        git remote -v set-url origin "https://$GITHUB_ACTOR:$ACTIONS_SECRET@github.com/$GITHUB_REPOSITORY"
+        git fetch origin '+refs/heads/*:refs/heads/*' --update-head-ok
+        git checkout $destination_branch
+        echo "Merging $source_branch into $destination_branch"
+        git merge $source_branch --verbose
+        git push origin $destination_branch
+    - name: pull-request # Step to create PR
+      env:
+        source_branch: ${{ inputs.source_branch }}
+        destination_branch: ${{ inputs.destination_branch }}
+      if: ${{ failure() }}
+      uses: repo-sync/pull-request@v2 # 3rd party action
+      with:
+        source_branch: ${{ env.source_branch }}                               # If blank, default: triggered branch
+        destination_branch: ${{ env.destination_branch }}                 # If blank, default: master
+        pr_title: "Update $destination_branch with latest changes from $source_branch"     # Title of pull request
+        pr_body: ":crown: *An automated PR*"              # Full markdown support, requires pr_title to be set
+        pr_label: "auto-pr"                               # Comma-separated list (no spaces)
+        pr_draft: false                                   # Creates pull request as draft
+        pr_allow_empty: false                             # Creates pull request even if there are no changes
+        github_token: ${{ inputs.github_token }} # needed for auth git commands
